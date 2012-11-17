@@ -8,6 +8,8 @@ import de.hsbremen.androidkurs.besitzdatenbank.dummy.DummyContent;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -16,43 +18,45 @@ public class ItemListFragment extends ListFragment {
 
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
-	public static final String EXTRA_CATEGORY = "cat";
+	public static final String ARG_CATEGORY_ID = "cat";
 
 	private Callbacks mCallbacks = sDummyCallbacks;
+	
 	private int mActivatedPosition = ListView.INVALID_POSITION;
 
 	public interface Callbacks {
 
-		public void onItemSelected(String id);
+		public void onItemSelected(int itemId, int categoryId);
 	}
 
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
-		public void onItemSelected(String id) {
+		public void onItemSelected(int itemId, int categoryId) {
 		}
 	};
 
 	public ItemListFragment() {
 	}
 
+	int categoryID;
+	
+	List<String> items;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		Bundle arguments = getArguments();
-		
-		int category = -1;
-		if(arguments != null) {
-			category = getArguments().getInt(EXTRA_CATEGORY);
+		if(getArguments().containsKey(ARG_CATEGORY_ID)) {
+			categoryID = getArguments().getInt(ARG_CATEGORY_ID);
 		}
 		
 
 		// TODO Get Items
 
-		List<String> items = new ArrayList<String>();
+		items = new ArrayList<String>();
 
 		// TODO Harcoded shit
-		switch (category) {
+		switch (categoryID) {
 		case 0:
 			items = DummyContent.ELEKTRONIK;
 			break;
@@ -100,9 +104,10 @@ public class ItemListFragment extends ListFragment {
 	public void onListItemClick(ListView listView, View view, int position,
 			long id) {
 		super.onListItemClick(listView, view, position, id);
+
+		mActivatedPosition = position;
 		
-		//TODO Get from SQL
-		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+		mCallbacks.onItemSelected(position, this.categoryID);
 	}
 
 	@Override
@@ -113,6 +118,15 @@ public class ItemListFragment extends ListFragment {
 		}
 	}
 
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		
+		if(savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+			mCallbacks.onItemSelected(savedInstanceState.getInt(STATE_ACTIVATED_POSITION), this.categoryID);
+		}
+	}
+	
 	public void setActivateOnItemClick(boolean activateOnItemClick) {
 		getListView().setChoiceMode(
 				activateOnItemClick ? ListView.CHOICE_MODE_SINGLE

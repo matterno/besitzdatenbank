@@ -14,16 +14,22 @@ public class ItemDetailFragment extends Fragment {
 
     public static final String ARG_ITEM_ID = "item_id";
 
-    DummyContent.DummyItem mItem;
+    String mItem;
 
+    int categoryId;
+    
     public ItemDetailFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments().containsKey(ItemListFragment.ARG_CATEGORY_ID)) {
+        	categoryId = getArguments().getInt(ItemListFragment.ARG_CATEGORY_ID);
+        }
+        
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem = DummyContent.getList(categoryId).get(getArguments().getInt(ARG_ITEM_ID));
         }
     }
 
@@ -32,7 +38,7 @@ public class ItemDetailFragment extends Fragment {
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_item_detail, container, false);
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.content);
+            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem);
         }
         return rootView;
     }

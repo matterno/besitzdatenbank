@@ -1,8 +1,10 @@
 package de.hsbremen.androidkurs.besitzdatenbank;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hsbremen.androidkurs.besitzdatenbank.dummy.DummyContent;
 
-import android.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -12,86 +14,118 @@ import android.widget.ListView;
 
 public class ItemListFragment extends ListFragment {
 
-    private static final String STATE_ACTIVATED_POSITION = "activated_position";
+	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
-    private Callbacks mCallbacks = sDummyCallbacks;
-    private int mActivatedPosition = ListView.INVALID_POSITION;
+	public static final String EXTRA_CATEGORY = "cat";
 
-    public interface Callbacks {
+	private Callbacks mCallbacks = sDummyCallbacks;
+	private int mActivatedPosition = ListView.INVALID_POSITION;
 
-        public void onItemSelected(String id);
-    }
+	public interface Callbacks {
 
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onItemSelected(String id) {
-        }
-    };
+		public void onItemSelected(String id);
+	}
 
-    public ItemListFragment() {
-    }
+	private static Callbacks sDummyCallbacks = new Callbacks() {
+		@Override
+		public void onItemSelected(String id) {
+		}
+	};
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                R.layout.simple_list_item_activated_1,
-                R.id.text1,
-                DummyContent.ITEMS));
-    }
+	public ItemListFragment() {
+	}
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null && savedInstanceState
-                .containsKey(STATE_ACTIVATED_POSITION)) {
-            setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
-        }
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		Bundle arguments = getArguments();
+		
+		int category = -1;
+		if(arguments != null) {
+			category = getArguments().getInt(EXTRA_CATEGORY);
+		}
+		
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof Callbacks)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
-        }
+		// TODO Get Items
 
-        mCallbacks = (Callbacks) activity;
-    }
+		List<String> items = new ArrayList<String>();
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallbacks = sDummyCallbacks;
-    }
+		// TODO Harcoded shit
+		switch (category) {
+		case 0:
+			items = DummyContent.ELEKTRONIK;
+			break;
+		case 1:
+			items = DummyContent.LEBENSMITTEL;
+			break;
+		case 2:
+			items = DummyContent.FILME;
+			break;
+		}
 
-    @Override
-    public void onListItemClick(ListView listView, View view, int position, long id) {
-        super.onListItemClick(listView, view, position, id);
-        mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
-    }
+		setListAdapter(new ArrayAdapter<String>(getActivity(),
+				android.R.layout.simple_list_item_activated_1, android.R.id.text1,
+				items));
+	}
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mActivatedPosition != ListView.INVALID_POSITION) {
-            outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
-        }
-    }
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		if (savedInstanceState != null
+				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+			setActivatedPosition(savedInstanceState
+					.getInt(STATE_ACTIVATED_POSITION));
+		}
+	}
 
-    public void setActivateOnItemClick(boolean activateOnItemClick) {
-        getListView().setChoiceMode(activateOnItemClick
-                ? ListView.CHOICE_MODE_SINGLE
-                : ListView.CHOICE_MODE_NONE);
-    }
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		if (!(activity instanceof Callbacks)) {
+			throw new IllegalStateException(
+					"Activity must implement fragment's callbacks.");
+		}
 
-    public void setActivatedPosition(int position) {
-        if (position == ListView.INVALID_POSITION) {
-            getListView().setItemChecked(mActivatedPosition, false);
-        } else {
-            getListView().setItemChecked(position, true);
-        }
+		mCallbacks = (Callbacks) activity;
+	}
 
-        mActivatedPosition = position;
-    }
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		mCallbacks = sDummyCallbacks;
+	}
+
+	@Override
+	public void onListItemClick(ListView listView, View view, int position,
+			long id) {
+		super.onListItemClick(listView, view, position, id);
+		
+		//TODO Get from SQL
+		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if (mActivatedPosition != ListView.INVALID_POSITION) {
+			outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
+		}
+	}
+
+	public void setActivateOnItemClick(boolean activateOnItemClick) {
+		getListView().setChoiceMode(
+				activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
+						: ListView.CHOICE_MODE_NONE);
+	}
+
+	public void setActivatedPosition(int position) {
+		if (position == ListView.INVALID_POSITION) {
+			getListView().setItemChecked(mActivatedPosition, false);
+		} else {
+			getListView().setItemChecked(position, true);
+		}
+
+		mActivatedPosition = position;
+	}
 }

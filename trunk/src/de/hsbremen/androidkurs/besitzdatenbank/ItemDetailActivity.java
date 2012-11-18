@@ -8,6 +8,8 @@ import android.view.MenuItem;
 
 public class ItemDetailActivity extends FragmentActivity {
 
+	private int category;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,8 +19,10 @@ public class ItemDetailActivity extends FragmentActivity {
 
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
-            arguments.putInt(ItemDetailFragment.ARG_ITEM_ID,
-                    getIntent().getIntExtra(ItemDetailFragment.ARG_ITEM_ID,0));
+            arguments.putInt(ItemListActivity.EXTRA_SELECTED_ITEM,
+                    getIntent().getIntExtra(ItemListActivity.EXTRA_SELECTED_ITEM,0));
+            category = getIntent().getIntExtra(ItemListActivity.EXTRA_SELECTED_CATEGORY,0);
+            arguments.putInt(ItemListActivity.EXTRA_SELECTED_CATEGORY,category);
             ItemDetailFragment fragment = new ItemDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -30,7 +34,10 @@ public class ItemDetailActivity extends FragmentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            NavUtils.navigateUpTo(this, new Intent(this, ItemListActivity.class));
+        	Intent intent = new Intent(this, ItemListActivity.class); 
+        	intent.putExtra(ItemListActivity.EXTRA_SELECTED_CATEGORY, category);
+        	
+            NavUtils.navigateUpTo(this, intent);
             return true;
         }
 

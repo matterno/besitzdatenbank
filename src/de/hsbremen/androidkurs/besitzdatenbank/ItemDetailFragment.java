@@ -4,6 +4,7 @@ import de.hsbremen.androidkurs.besitzdatenbank.dummy.DummyContent;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,11 @@ import android.widget.TextView;
 
 public class ItemDetailFragment extends Fragment {
 
-    public static final String ARG_ITEM_ID = "item_id";
-
     String mItem;
 
-    int categoryId;
+    private int categoryId;
+    
+    private int itemId;
     
     public ItemDetailFragment() {
     }
@@ -24,12 +25,22 @@ public class ItemDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments().containsKey(ItemListFragment.ARG_CATEGORY_ID)) {
-        	categoryId = getArguments().getInt(ItemListFragment.ARG_CATEGORY_ID);
+        if (getArguments().containsKey(ItemListActivity.EXTRA_SELECTED_CATEGORY)) {
+        	categoryId = getArguments().getInt(ItemListActivity.EXTRA_SELECTED_CATEGORY);
         }
         
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            mItem = DummyContent.getList(categoryId).get(getArguments().getInt(ARG_ITEM_ID));
+        Log.d("ItemDetailFragment", "categoryId = " + categoryId);
+        
+        if (getArguments().containsKey(ItemListActivity.EXTRA_SELECTED_ITEM)) {
+        	
+        	itemId = getArguments().getInt(ItemListActivity.EXTRA_SELECTED_ITEM);
+        	
+        	Log.d("ItemDetailFragment", "itemId = " + itemId);
+        	
+        	// TODO SQL... Eigenschaften
+            mItem = DummyContent.getList(categoryId).get(itemId);
+        	
+            Log.d("ItemDetailFragment", "mItem: " + mItem);
         }
     }
 

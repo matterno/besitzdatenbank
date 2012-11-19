@@ -1,18 +1,32 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/menu_itemlist_search"
+        android:id="@+id/menu_itemlist_add"
         android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/menu_add"/>
+
+    <item
+        android:id="@+id/menu_itemlist_edit"
+        android:orderInCategory="200"
+        android:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/menu_edit" />
+   
+    <item
+        android:id="@+id/menu_itemlist_delete"
+        android:orderInCategory="300"
+        android:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/menu_delete"/>
+    
+    <item
+        android:id="@+id/menu_itemlist_search"
+        android:orderInCategory="400"
         android:showAsAction="ifRoom|collapseActionView"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/menu_search"
         android:actionViewClass="android.widget.SearchView" />
-    
-    <item
-        android:id="@+id/menu_itemlist_add"
-        android:orderInCategory="200"
-        android:showAsAction="ifRoom"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="@string/menu_add"/>
     
 </menu>

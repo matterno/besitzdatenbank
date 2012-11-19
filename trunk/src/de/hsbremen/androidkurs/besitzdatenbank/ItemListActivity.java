@@ -73,6 +73,7 @@ public class ItemListActivity extends FragmentActivity implements
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		actionBar.setListNavigationCallbacks(mSpinnerAdapter, this);
 		actionBar.setSelectedNavigationItem(mSelectedCategory);
+		actionBar.setDisplayShowTitleEnabled(false);
 		
 		// Look if its the tablet (two pane) or normal layout
 		if (findViewById(R.id.item_detail_container) != null) {
@@ -134,13 +135,15 @@ public class ItemListActivity extends FragmentActivity implements
 		
 		if (mTwoPane) {
 			Bundle arguments = new Bundle();
+			
 			arguments.putInt(EXTRA_SELECTED_CATEGORY, mSelectedCategory);
 			
 			Fragment fragment = new ItemListFragment();
 			fragment.setArguments(arguments);
 			
 			getSupportFragmentManager().beginTransaction().replace(R.id.item_list, fragment).commit();
-			
+
+			mSelectedItem = 0;
 			this.onItemSelected(mSelectedItem);
 		} else {	
 			mViewPager.setCurrentItem(mSelectedCategory);

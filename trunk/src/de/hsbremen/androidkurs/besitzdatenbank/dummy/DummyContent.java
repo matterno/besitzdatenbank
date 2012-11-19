@@ -38,6 +38,27 @@ public class DummyContent {
 		LEBENSMITTEL.add("Pizza");
 		LEBENSMITTEL.add("Cornflakes");
 		LEBENSMITTEL.add("Cola");
+		LEBENSMITTEL.add("Nüsse");
+		LEBENSMITTEL.add("Butter");
+		LEBENSMITTEL.add("Schinken");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
+		LEBENSMITTEL.add("etc");
 
 		FILME.add("Stirb Langsam 1");
 		FILME.add("Stirb Langsam 2");

@@ -1,8 +1,44 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="?android:attr/textAppearanceLarge"
-    android:id="@+id/item_detail"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    tools:context=".ItemDetailFragment" />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+    <!-- Helper View -->
+    <View
+        android:id="@+id/half_screen_helper"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true" />
+    
+    <ImageView
+        android:padding="16dp"
+        android:id="@+id/iv_item_detail_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/half_screen_helper"
+        android:contentDescription="@string/iv_image"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_input_get" />
+
+    <TextView
+        style="?android:attr/textAppearanceLarge"
+        android:id="@+id/tv_item_detail_name"
+        android:padding="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_alignBottom="@+id/iv_item_detail_image"
+        android:layout_toRightOf="@+id/iv_item_detail_image"
+        android:text="" />
+
+    <LinearLayout
+        android:id="@+id/ll_attributes"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/iv_item_detail_image"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+</RelativeLayout>

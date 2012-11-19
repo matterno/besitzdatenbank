@@ -73,31 +73,6 @@ public class ItemListFragment extends ListFragment {
 				items));
 	}
 
-//	@Override
-//	public void onViewCreated(View view, Bundle savedInstanceState) {
-//		super.onViewCreated(view, savedInstanceState);
-//		
-//		Log.d("ItemListFragment", "onViewCreated");
-//		
-////		if (savedInstanceState != null
-////				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-////			setActivatedPosition(savedInstanceState
-////					.getInt(STATE_ACTIVATED_POSITION));
-////		}
-//		
-//		Log.d("ItemListFragment", "mSelectedItem = " + mSelectedItem);
-//		
-//		if(savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-//			mSelectedItem = savedInstanceState.getInt(STATE_ACTIVATED_POSITION);			
-//		} else {
-//			mSelectedItem = 0;
-//		}
-//		
-//		Log.d("ItemListFragment", "mSelectedItem = " + mSelectedItem);
-//		
-//		mCallbacks.onItemSelected(mSelectedItem);
-//	}
-
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -134,27 +109,4 @@ public class ItemListFragment extends ListFragment {
 		
 		mCallbacks.onItemSelected(position);
 	}
-
-//	@Override
-//	public void onSaveInstanceState(Bundle outState) {
-//		super.onSaveInstanceState(outState);
-//		
-//		Log.d("ItemListFragment", "onSaveInstanceState");
-//		
-//		if (mSelectedItem != ListView.INVALID_POSITION) {
-//			outState.putInt(STATE_ACTIVATED_POSITION, mSelectedItem);
-//		}
-//	}
-
-//	public void setActivatedPosition(int position) {
-//		Log.d("ItemListFragment", "setActivatedPosition");
-//		
-//		if (position == ListView.INVALID_POSITION) {
-//			getListView().setItemChecked(mSelectedItem, false);
-//		} else {
-//			getListView().setItemChecked(position, true);
-//		}
-//
-//		mSelectedItem = position;
-//	}
 }

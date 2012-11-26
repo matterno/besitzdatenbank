@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
     <!-- Helper View -->
     <View
@@ -32,13 +32,12 @@
         android:layout_toRightOf="@+id/iv_item_detail_image"
         android:text="" />
 
-    <LinearLayout
-        android:id="@+id/ll_attributes"
+    <ListView
+        android:id="@+id/lv_attributes"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/iv_item_detail_image"
-        android:orientation="vertical" >
-    </LinearLayout>
-
+        android:layout_below="@+id/iv_item_detail_image" >
+    </ListView>
+    
 </RelativeLayout>

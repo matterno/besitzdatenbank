@@ -3,6 +3,9 @@ package de.hsbremen.androidkurs.besitzdatenbank;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hsbremen.androidkurs.besitzdatenbank.sqlite.CategoryDataSource;
+import de.hsbremen.androidkurs.besitzdatenbank.sqlite.entity.Category;
+
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,7 +36,7 @@ public class ItemListActivity extends FragmentActivity implements
 
 	private SpinnerAdapter mSpinnerAdapter;
 
-	private List<String> categories;
+	private List<Category> categories;
 
 	private int mSelectedCategory;
 	
@@ -60,13 +63,22 @@ public class ItemListActivity extends FragmentActivity implements
 		Log.d("ItemListActivity", "mSelectedCategory = " + mSelectedCategory);
 		Log.d("ItemListActivity", "mSelectedItem = " + mSelectedItem);
 		
+		// Hardcode
+		Category c = new Category();
+		c.setName("Elektronik");
+		CategoryDataSource categoryDataSource = new CategoryDataSource(this);
+		categoryDataSource.open();
+		categoryDataSource.insertCategory(c);
+		//categoryDataSource.close();
+		
 		//TODO Hardcoded shit
-		categories = new ArrayList<String>();
-		categories.add("Elektronik");
-		categories.add("Lebensmittel");
-		categories.add("Filme");
+		categories = categoryDataSource.getAllCategories();
+//				new ArrayList<String>();
+//		categories.add("Elektronik");
+//		categories.add("Lebensmittel");
+//		categories.add("Filme");
 
-		mSpinnerAdapter = new ArrayAdapter<String>(this,
+		mSpinnerAdapter = new ArrayAdapter<Category>(this,
 				android.R.layout.simple_spinner_dropdown_item, categories);
 		
 		ActionBar actionBar = getActionBar();
@@ -222,7 +234,7 @@ public class ItemListActivity extends FragmentActivity implements
 		@Override
 		public CharSequence getPageTitle(int position) {
 			// TODO From DB
-			return categories.get(position);
+			return categories.get(position).toString();
 		}
 	}
 

@@ -51,7 +51,7 @@ containing a value of this type.
         public static final int item_detail_container=0x7f070000;
         public static final int item_list=0x7f070003;
         public static final int iv_item_detail_image=0x7f070005;
-        public static final int ll_attributes=0x7f070007;
+        public static final int lv_attributes=0x7f070007;
         public static final int menu_itemlist_add=0x7f070008;
         public static final int menu_itemlist_delete=0x7f07000a;
         public static final int menu_itemlist_edit=0x7f070009;

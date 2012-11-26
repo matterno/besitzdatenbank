@@ -6,13 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +20,7 @@ public class ItemDetailFragment extends Fragment {
 	
 	private ImageView iv_image;
 	
-	private LinearLayout ll_atributes;
+	private ListView lv_attributes;
 	
     private String mItem;
 
@@ -64,7 +61,7 @@ public class ItemDetailFragment extends Fragment {
         
         tv_name = (TextView) rootView.findViewById(R.id.tv_item_detail_name);
         iv_image = (ImageView) rootView.findViewById(R.id.iv_item_detail_image);
-        ll_atributes = (LinearLayout) rootView.findViewById(R.id.ll_attributes);
+        lv_attributes = (ListView) rootView.findViewById(R.id.lv_attributes);
         
         //TODO Add ListAdapter to Layout
         

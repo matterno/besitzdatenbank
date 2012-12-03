@@ -4,56 +4,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hsbremen.androidkurs.besitzdatenbank.sqlite.entity.Item;
-import de.hsbremen.androidkurs.besitzdatenbank.sqlite.helper.BesitzSQLiteHelper;
+import de.hsbremen.androidkurs.besitzdatenbank.sqlite.helper.BesitzSQLiteOpenHelper;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 public class ItemDataSource {
 	// Database fields
 	private SQLiteDatabase database;
-	private BesitzSQLiteHelper dbHelper;
 	private String[] allColumns = {
-			BesitzSQLiteHelper.COLUMN_ID,
-			BesitzSQLiteHelper.COLUMN_NAME,
-			BesitzSQLiteHelper.COLUMN_PICTURE,
-			BesitzSQLiteHelper.COLUMN_CATEGORYID };
+			BesitzSQLiteOpenHelper.COLUMN_ID,
+			BesitzSQLiteOpenHelper.COLUMN_NAME,
+			BesitzSQLiteOpenHelper.COLUMN_PICTURE,
+			BesitzSQLiteOpenHelper.COLUMN_CATEGORYID };
 
-	public ItemDataSource(Context context) {
-		dbHelper = new BesitzSQLiteHelper(context);
-	}
-
-	public void open() throws SQLException {
-		database = dbHelper.getWritableDatabase();
-	}
-
-	public void close() {
-		dbHelper.close();
+	public ItemDataSource(SQLiteDatabase database) {
+		this.database = database;
 	}
 
 	public long insertItem(Item item) {
 		ContentValues values = new ContentValues();
-		values.put(BesitzSQLiteHelper.COLUMN_NAME, item.getName());
-		values.put(BesitzSQLiteHelper.COLUMN_PICTURE, item.getPicture());
-		values.put(BesitzSQLiteHelper.COLUMN_CATEGORYID, item.getCategoryId());
-		return database.insert(BesitzSQLiteHelper.TABLE_CATEGORY, null, values);
+		values.put(BesitzSQLiteOpenHelper.COLUMN_NAME, item.getName());
+		values.put(BesitzSQLiteOpenHelper.COLUMN_PICTURE, item.getPicture());
+		values.put(BesitzSQLiteOpenHelper.COLUMN_CATEGORYID, item.getCategoryId());
+		return database.insert(BesitzSQLiteOpenHelper.TABLE_ITEM, null, values);
 	}
 
 	public long updateItem(Item item) {
 		ContentValues values = new ContentValues();
-		values.put(BesitzSQLiteHelper.COLUMN_NAME, item.getName());
-		values.put(BesitzSQLiteHelper.COLUMN_PICTURE, item.getPicture());
-		values.put(BesitzSQLiteHelper.COLUMN_CATEGORYID, item.getCategoryId());
-		return database.update(BesitzSQLiteHelper.TABLE_CATEGORY, values,
-				BesitzSQLiteHelper.COLUMN_ID + " = ?",
+		values.put(BesitzSQLiteOpenHelper.COLUMN_NAME, item.getName());
+		values.put(BesitzSQLiteOpenHelper.COLUMN_PICTURE, item.getPicture());
+		values.put(BesitzSQLiteOpenHelper.COLUMN_CATEGORYID, item.getCategoryId());
+		return database.update(BesitzSQLiteOpenHelper.TABLE_ITEM, values,
+				BesitzSQLiteOpenHelper.COLUMN_ID + " = ?",
 				new String[] { String.valueOf(item.getId()) });
 	}
 
 	public void deleteItem(long id) {
-		database.delete(BesitzSQLiteHelper.TABLE_ITEM,
-				BesitzSQLiteHelper.COLUMN_ID + " = ?",
+		database.delete(BesitzSQLiteOpenHelper.TABLE_ITEM,
+				BesitzSQLiteOpenHelper.COLUMN_ID + " = ?",
 				new String[] { String.valueOf(id) });
 	}
 
@@ -62,7 +51,7 @@ public class ItemDataSource {
 		Item item = null;
 
 		if ((cursor = database.rawQuery("select "
-				+ BesitzSQLiteHelper.COLUMN_NAME + " from " + BesitzSQLiteHelper.TABLE_ITEM
+				+ BesitzSQLiteOpenHelper.COLUMN_NAME + " from " + BesitzSQLiteOpenHelper.TABLE_ITEM
 				+ " where _id = ?", new String[] { String.valueOf(id) })) != null) {
 			if (cursor.moveToFirst()) {
 				item = this.cursorToItem(cursor);
@@ -73,11 +62,15 @@ public class ItemDataSource {
 		return item;
 	}
 
+	public Cursor fetchItems() {
+		return database.query(BesitzSQLiteOpenHelper.TABLE_ITEM,
+				allColumns, null, null, null, null, null);
+	}
+	
 	public List<Item> getAllItems() {
 		List<Item> items = new ArrayList<Item>();
 
-		Cursor cursor = database.query(BesitzSQLiteHelper.TABLE_ITEM,
-				allColumns, null, null, null, null, null);
+		Cursor cursor = fetchItems();
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {

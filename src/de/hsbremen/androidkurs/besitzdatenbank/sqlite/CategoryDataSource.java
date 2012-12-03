@@ -4,49 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hsbremen.androidkurs.besitzdatenbank.sqlite.entity.Category;
-import de.hsbremen.androidkurs.besitzdatenbank.sqlite.helper.BesitzSQLiteHelper;
+import de.hsbremen.androidkurs.besitzdatenbank.sqlite.helper.BesitzSQLiteOpenHelper;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 public class CategoryDataSource {
 	// Database fields
 	private SQLiteDatabase database;
-	private BesitzSQLiteHelper dbHelper;
-	private String[] allColumns = { BesitzSQLiteHelper.COLUMN_ID,
-			BesitzSQLiteHelper.COLUMN_NAME };
+	private String[] allColumns = { BesitzSQLiteOpenHelper.COLUMN_ID,
+			BesitzSQLiteOpenHelper.COLUMN_NAME };
 
-	public CategoryDataSource(Context context) {
-		dbHelper = new BesitzSQLiteHelper(context);
-	}
-
-	public void open() throws SQLException {
-		database = dbHelper.getWritableDatabase();
-	}
-
-	public void close() {
-		dbHelper.close();
+	public CategoryDataSource(SQLiteDatabase database) {
+		this.database = database;
 	}
 
 	public long insertCategory(Category category) {
 		ContentValues values = new ContentValues();
-		values.put(BesitzSQLiteHelper.COLUMN_NAME, category.getName());
-		return database.insert(BesitzSQLiteHelper.TABLE_CATEGORY, null, values);
+		values.put(BesitzSQLiteOpenHelper.COLUMN_NAME, category.getName());
+		return database.insert(BesitzSQLiteOpenHelper.TABLE_CATEGORY, null, values);
 	}
 
 	public long updateCategory(Category category) {
 		ContentValues values = new ContentValues();
-		values.put(BesitzSQLiteHelper.COLUMN_NAME, category.getName());
-		return database.update(BesitzSQLiteHelper.TABLE_CATEGORY, values,
-				BesitzSQLiteHelper.COLUMN_ID + " = ?",
+		values.put(BesitzSQLiteOpenHelper.COLUMN_NAME, category.getName());
+		return database.update(BesitzSQLiteOpenHelper.TABLE_CATEGORY, values,
+				BesitzSQLiteOpenHelper.COLUMN_ID + " = ?",
 				new String[] { String.valueOf(category.getId()) });
 	}
 
 	public void deleteCategory(long id) {
-		database.delete(BesitzSQLiteHelper.TABLE_CATEGORY,
-				BesitzSQLiteHelper.COLUMN_ID + " = ?",
+		database.delete(BesitzSQLiteOpenHelper.TABLE_CATEGORY,
+				BesitzSQLiteOpenHelper.COLUMN_ID + " = ?",
 				new String[] { String.valueOf(id) });
 	}
 
@@ -55,13 +44,10 @@ public class CategoryDataSource {
 		Category category = null;
 
 		if ((cursor = database.rawQuery("select "
-				+ BesitzSQLiteHelper.COLUMN_NAME + " from " + BesitzSQLiteHelper.TABLE_CATEGORY
+				+ BesitzSQLiteOpenHelper.COLUMN_NAME + " from " + BesitzSQLiteOpenHelper.TABLE_CATEGORY
 				+ " where _id = ?", new String[] { String.valueOf(id) })) != null) {
 			if (cursor.moveToFirst()) {
-				category = new Category();
-
-				category.setId(id);
-				category.setName(cursor.getString(1));
+				category = this.cursorToCategory(cursor);
 			}
 			cursor.close();
 		}
@@ -69,11 +55,15 @@ public class CategoryDataSource {
 		return category;
 	}
 
+	public Cursor fetchCategories() {
+		return database.query(BesitzSQLiteOpenHelper.TABLE_CATEGORY,
+				allColumns, null, null, null, null, null);
+	}
+
 	public List<Category> getAllCategories() {
 		List<Category> categories = new ArrayList<Category>();
 
-		Cursor cursor = database.query(BesitzSQLiteHelper.TABLE_CATEGORY,
-				allColumns, null, null, null, null, null);
+		Cursor cursor = fetchCategories();
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
@@ -86,11 +76,24 @@ public class CategoryDataSource {
 		cursor.close();
 		return categories;
 	}
-
+	
 	private Category cursorToCategory(Cursor cursor) {
 		Category category = new Category();
 		category.setId(cursor.getLong(0));
 		category.setName(cursor.getString(1));
 		return category;
+	}
+
+	public long findIdByName(String value) {
+		Cursor c = database.query(BesitzSQLiteOpenHelper.TABLE_CATEGORY, allColumns, "name LIKE ?", new String[]{value}, null, null, null);
+		c.moveToFirst();
+		if(c.isAfterLast()) {
+			c.close();
+			return 0;
+		} else {
+			long id = c.getLong(0);
+			c.close();
+			return id;
+		}
 	}
 }

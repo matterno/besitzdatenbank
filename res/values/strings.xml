@@ -9,4 +9,10 @@
     <string name="menu_edit">Edit</string>
         
     <string name="iv_image">Image</string>
+    
+    <string name="category">Category</string>
+    <string name="item">Item</string>
+    
+    <string name="btn_save">Save</string>
+    <string name="btn_cancel">Cancel</string>
 </resources>

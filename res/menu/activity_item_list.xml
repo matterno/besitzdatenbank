@@ -9,21 +9,21 @@
 
     <item
         android:id="@+id/menu_itemlist_edit"
-        android:orderInCategory="200"
-        android:showAsAction="ifRoom"
+        android:orderInCategory="300"
+        android:showAsAction="never"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/menu_edit" />
    
     <item
         android:id="@+id/menu_itemlist_delete"
-        android:orderInCategory="300"
-        android:showAsAction="ifRoom"
+        android:orderInCategory="400"
+        android:showAsAction="never"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/menu_delete"/>
     
     <item
         android:id="@+id/menu_itemlist_search"
-        android:orderInCategory="400"
+        android:orderInCategory="200"
         android:showAsAction="ifRoom|collapseActionView"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/menu_search"

@@ -39,7 +39,7 @@ public class ItemListActivity extends FragmentActivity implements
 
 	private SpinnerAdapter mSpinnerAdapter;
 
-	private List<Category> categorieNames;
+	private List<Category> categories;
 
 	private int mSelectedCategory;
 
@@ -67,17 +67,19 @@ public class ItemListActivity extends FragmentActivity implements
 		Log.d("ItemListActivity", "mSelectedCategory = " + mSelectedCategory);
 		Log.d("ItemListActivity", "mSelectedItem = " + mSelectedItem);
 
-		categorieNames = BesitzApplication.getCategoryDataSource()
+		categories = BesitzApplication.getCategoryDataSource()
 				.getAllCategories();
 
 		// Handling if no categories in DB.
 
 		ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		actionBar.setSelectedNavigationItem(mSelectedCategory);
+		actionBar.setBackgroundDrawable(getResources().getDrawable(R.color.greenPrimary));
 		actionBar.setDisplayShowTitleEnabled(false);
-		
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		addDefaultCategoryOnEmpty();
 		refreshActionBarNavigationAdapter();
+
+		actionBar.setSelectedNavigationItem(mSelectedCategory);
 
 		// Look if its the tablet (two pane) or normal layout
 		if (findViewById(R.id.item_detail_container) != null) {
@@ -100,26 +102,31 @@ public class ItemListActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void onItemSelected(int itemId) {
+	public void onItemSelected(int position, long itemId) {
 		Log.d("ItemListActivity", "onItemSelected");
 
-		mSelectedItem = itemId;
+		mSelectedItem = position;
 
 		Log.d("ItemListActivity", "mSelectedItem = " + mSelectedItem);
 
 		if (mTwoPane) {
 			Bundle arguments = new Bundle();
-			arguments.putInt(EXTRA_SELECTED_ITEM, mSelectedItem);
-			arguments.putLong(EXTRA_SELECTED_CATEGORY, BesitzApplication.getCategoryDataSource().findIdByName(categorieNames.get(mSelectedCategory).toString()));
+			arguments.putLong(EXTRA_SELECTED_ITEM, itemId);
+			arguments.putLong(
+					EXTRA_SELECTED_CATEGORY,
+					BesitzApplication.getCategoryDataSource().findIdByName(
+							categories.get(mSelectedCategory).toString()));
 			ItemDetailFragment fragment = new ItemDetailFragment();
 			fragment.setArguments(arguments);
+			
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.item_detail_container, fragment).commit();
 		} else {
 			// TODO
 			Intent detailIntent = new Intent(this, ItemDetailActivity.class);
-			detailIntent.putExtra(EXTRA_SELECTED_ITEM, mSelectedItem);
-			detailIntent.putExtra(EXTRA_SELECTED_CATEGORY, mSelectedCategory);
+			detailIntent.putExtra(EXTRA_SELECTED_ITEM, itemId);
+			detailIntent.putExtra(EXTRA_SELECTED_CATEGORY,
+					categories.get(mSelectedCategory).getId());
 			startActivity(detailIntent);
 		}
 	}
@@ -135,16 +142,18 @@ public class ItemListActivity extends FragmentActivity implements
 		if (mTwoPane) {
 			Bundle arguments = new Bundle();
 
-			arguments.putInt(EXTRA_SELECTED_CATEGORY, mSelectedCategory);
+			arguments.putLong(EXTRA_SELECTED_CATEGORY,
+					categories.get(mSelectedCategory).getId());
 
-			Fragment fragment = new ItemListFragment();
+			ItemListFragment fragment = new ItemListFragment();
 			fragment.setArguments(arguments);
-
+			
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.item_list, fragment).commit();
 
 			mSelectedItem = 0;
-			this.onItemSelected(mSelectedItem);
+			this.onItemSelected(itemPosition, BesitzApplication
+					.getItemDataSource().getAllItems().get(0).getId());
 		} else {
 			mViewPager.setCurrentItem(mSelectedCategory);
 		}
@@ -178,13 +187,13 @@ public class ItemListActivity extends FragmentActivity implements
 
 		switch (item.getItemId()) {
 		case R.id.menu_itemlist_add:
-			showChooseDialog(R.string.menu_add);
+			showAddChooseDialog();
 			break;
 		case R.id.menu_itemlist_delete:
-			showChooseDialog(R.string.menu_delete);
+			showDeleteConfirmationDialog();
 			break;
 		case R.id.menu_itemlist_edit:
-			showChooseDialog(R.string.menu_edit);
+			showEditInputDialog();
 			break;
 		default:
 			break;
@@ -219,8 +228,8 @@ public class ItemListActivity extends FragmentActivity implements
 			// TODO Übergabe der Kategorie etc...
 
 			Bundle arguments = new Bundle();
-			arguments
-					.putInt(ItemListActivity.EXTRA_SELECTED_CATEGORY, position);
+			arguments.putLong(ItemListActivity.EXTRA_SELECTED_CATEGORY,
+					categories.get(position).getId());
 
 			Fragment fragment = new ItemListFragment();
 			fragment.setArguments(arguments);
@@ -229,12 +238,12 @@ public class ItemListActivity extends FragmentActivity implements
 
 		@Override
 		public int getCount() {
-			return categorieNames.size();
+			return categories.size();
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			return categorieNames.get(position).toString();
+			return categories.get(position).toString();
 		}
 	}
 
@@ -254,9 +263,9 @@ public class ItemListActivity extends FragmentActivity implements
 		Log.d("ItemListActivity", "mSelectedCategory = " + mSelectedCategory);
 	}
 
-	private void showChooseDialog(final int titleId) {
+	private void showAddChooseDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(getString(titleId));
+		builder.setTitle(getString(R.string.menu_add));
 		// TODO Switch Case menu title
 
 		final CharSequence[] items = { getString(R.string.category),
@@ -269,23 +278,21 @@ public class ItemListActivity extends FragmentActivity implements
 				switch (which) {
 				case 0:
 					// Category
-					showInputDialog(titleId, R.string.category);
+					showAddInputDialog(R.string.category);
 					break;
 				case 1:
 					// Item
-					showInputDialog(titleId, R.string.item);
+					showAddInputDialog(R.string.item);
 					break;
 				}
-
 			}
 		}).show();
 	}
 
-	private void showInputDialog(final int titleId, final int typeId) {
-		Log.d("titleId", titleId + "");
+	private void showAddInputDialog(final int typeId) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(getString(titleId) + " " + getString(typeId));
-
+		builder.setTitle(getString(R.string.menu_add) + " " + getString(typeId));
+		
 		final EditText input = new EditText(this);
 		builder.setView(input);
 
@@ -294,7 +301,7 @@ public class ItemListActivity extends FragmentActivity implements
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						String value = input.getText().toString();
-						
+
 						switch (typeId) {
 						case R.string.category:
 							Category cat = new Category();
@@ -305,12 +312,14 @@ public class ItemListActivity extends FragmentActivity implements
 							refreshActionBarNavigationAdapter();
 							break;
 						case R.string.item:
-							//TODO save new item
+							// TODO save new item
 							Item item = new Item();
 							item.setName(value);
-							item.setCategoryId(BesitzApplication.getCategoryDataSource().findIdByName(value));
-							BesitzApplication.getItemDataSource().insertItem(item);
-							
+							item.setCategoryId(categories
+									.get(mSelectedCategory).getId());
+							BesitzApplication.getItemDataSource().insertItem(
+									item);
+
 							refreshItemList();
 							break;
 						default:
@@ -320,38 +329,102 @@ public class ItemListActivity extends FragmentActivity implements
 					}
 				});
 
-		builder.setNegativeButton(R.string.btn_cancel,null);
+		builder.setNegativeButton(R.string.btn_cancel, null);
+
+		builder.show();
+	}
+	
+	private void showEditInputDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getString(R.string.menu_edit));
+
+		Category cat = categories.get(mSelectedCategory);
 		
+		final EditText input = new EditText(this);
+		input.setText(cat.getName());
+		builder.setView(input);
+
+		builder.setPositiveButton(R.string.btn_save,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						String value = input.getText().toString();
+
+						Category cat = categories.get(mSelectedCategory);
+						cat.setName(value);
+						BesitzApplication.getCategoryDataSource().updateCategory(cat);
+						
+						refreshActionBarNavigationAdapter();
+					}
+				});
+
+		builder.setNegativeButton(R.string.btn_cancel, null);
+
+		builder.show();
+	}
+	
+	
+	private void showDeleteConfirmationDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.menu_delete);
+		
+		builder.setMessage(R.string.delete_dialog_confirmation);
+
+		builder.setPositiveButton(R.string.btn_save,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						BesitzApplication.getCategoryDataSource().deleteCategory(categories.get(mSelectedCategory).getId());
+						categories = BesitzApplication.getCategoryDataSource().getAllCategories();
+						
+						addDefaultCategoryOnEmpty();
+						refreshActionBarNavigationAdapter();
+					}
+				});
+
+		builder.setNegativeButton(R.string.btn_cancel, null);
+
 		builder.show();
 	}
 
 	private void refreshActionBarNavigationAdapter() {
-		categorieNames = BesitzApplication.getCategoryDataSource()
+		categories = BesitzApplication.getCategoryDataSource()
 				.getAllCategories();
-		mSpinnerAdapter = new ArrayAdapter<Category>(ItemListActivity.this,
-				android.R.layout.simple_spinner_dropdown_item, categorieNames);
+		mSpinnerAdapter = new ArrayAdapter<Category>(getActionBar().getThemedContext(),
+				android.R.layout.simple_spinner_dropdown_item, categories);
 
 		getActionBar().setListNavigationCallbacks(mSpinnerAdapter,
 				ItemListActivity.this);
 	}
-	
+
 	private void refreshItemList() {
-		if(mTwoPane) {
-			
+		if (mTwoPane) {
+
 			Bundle arguments = new Bundle();
 			// Category is 0 at this point
-			arguments.putLong(EXTRA_SELECTED_CATEGORY, BesitzApplication.getCategoryDataSource().findIdByName(categorieNames.get(mSelectedCategory).toString()));
+			arguments.putLong(
+					EXTRA_SELECTED_CATEGORY,
+					BesitzApplication.getCategoryDataSource().findIdByName(
+							categories.get(mSelectedCategory).toString()));
 
 			Fragment fragment = new ItemListFragment();
 			fragment.setArguments(arguments);
 
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.item_list, fragment).commit();
-			
+
 		} else {
 			// Nothing
 			return;
 		}
-		
+
+	}
+	
+	private void addDefaultCategoryOnEmpty() {
+		if (categories.isEmpty()) {
+			Category category = new Category();
+			category.setName("default category");
+			BesitzApplication.getCategoryDataSource().insertCategory(category);
+		}
 	}
 }

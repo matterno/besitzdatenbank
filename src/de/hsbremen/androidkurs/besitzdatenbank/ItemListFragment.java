@@ -1,11 +1,11 @@
 package de.hsbremen.androidkurs.besitzdatenbank;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import de.hsbremen.androidkurs.besitzdatenbank.dummy.DummyContent;
+import de.hsbremen.androidkurs.besitzdatenbank.sqlite.entity.Item;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -23,21 +23,18 @@ public class ItemListFragment extends ListFragment {
 
 	public interface Callbacks {
 
-		public void onItemSelected(int itemId);
+		public void onItemSelected(int position, long itemId);
 	}
 
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
-		public void onItemSelected(int itemId) {
+		public void onItemSelected(int position, long itemId) {
 		}
 	};
 
-	public ItemListFragment() {
-	}
-
-	int categoryID;
+	long categoryID;
 	
-	List<String> items;
+	List<Item> items;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,29 +43,23 @@ public class ItemListFragment extends ListFragment {
 		Log.d("ItemListFragment", "onCreate");
 		
 		if(getArguments().containsKey(ItemListActivity.EXTRA_SELECTED_CATEGORY)) {
-			categoryID = getArguments().getInt(ItemListActivity.EXTRA_SELECTED_CATEGORY);
+			categoryID = getArguments().getLong(ItemListActivity.EXTRA_SELECTED_CATEGORY);
 		}
 		Log.d("ItemListFragment", "categoryID = " + categoryID);
 		
+		items = BesitzApplication.getItemDataSource().findByCategoryId(categoryID);
 
-		// TODO Get Items
-
-		items = new ArrayList<String>();
-
-		// TODO Harcoded shit
-		switch (categoryID) {
-		case 0:
-			items = DummyContent.ELEKTRONIK;
-			break;
-		case 1:
-			items = DummyContent.LEBENSMITTEL;
-			break;
-		case 2:
-			items = DummyContent.FILME;
-			break;
+		if(items.isEmpty()) {
+			Log.d("ItemListFragment", "Items for category " + categoryID + " are empty");
+			Item item = new Item();
+			item.setCategoryId(categoryID);
+			item.setName("default item");
+			BesitzApplication.getItemDataSource().insertItem(item);
+			
+			items = BesitzApplication.getItemDataSource().findByCategoryId(categoryID);
 		}
-
-		setListAdapter(new ArrayAdapter<String>(getActivity(),
+		
+		setListAdapter(new ArrayAdapter<Item>(getActivity(),
 				android.R.layout.simple_list_item_activated_1, android.R.id.text1,
 				items));
 	}
@@ -100,13 +91,13 @@ public class ItemListFragment extends ListFragment {
 	public void onListItemClick(ListView listView, View view, int position,
 			long id) {
 		super.onListItemClick(listView, view, position, id);
-
+		
 		Log.d("ItemListFragment", "onListItemClick");
 		
 		mSelectedItem = position;
 		
 		Log.d("ItemListFragment", "mSelectedItem = " + mSelectedItem);
 		
-		mCallbacks.onItemSelected(position);
+		mCallbacks.onItemSelected(position, items.get(position).getId());
 	}
 }

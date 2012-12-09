@@ -1,5 +1,15 @@
 <resources>
 
-    <style name="AppTheme" parent="android:Theme.Black" />
+    <style name="AppTheme" parent="android:Theme.Light" />
 
+    <style name="sectionHeader" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:drawableBottom">@drawable/section_header</item>
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">#99CC00</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    
 </resources>

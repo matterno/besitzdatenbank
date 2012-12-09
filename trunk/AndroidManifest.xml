@@ -5,17 +5,23 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="17"/>
+        android:targetSdkVersion="17" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name="BesitzApplication"
+        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:allowBackup="true"
-        android:name="BesitzApplication" >
-        <activity
-            android:name=".ItemListActivity" >
-            <intent-filter android:label="@string/app_name">
+        android:theme="@style/AppTheme" >
+        <activity android:name=".ItemListActivity" >
+            <intent-filter android:label="@string/app_name" >
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />

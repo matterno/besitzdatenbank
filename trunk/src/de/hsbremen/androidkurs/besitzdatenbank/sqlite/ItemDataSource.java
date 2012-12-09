@@ -49,10 +49,8 @@ public class ItemDataSource {
 	public Item getItem(long id) {
 		Cursor cursor;
 		Item item = null;
-
-		if ((cursor = database.rawQuery("select "
-				+ BesitzSQLiteOpenHelper.COLUMN_NAME + " from " + BesitzSQLiteOpenHelper.TABLE_ITEM
-				+ " where _id = ?", new String[] { String.valueOf(id) })) != null) {
+		
+		if ((cursor = database.query(BesitzSQLiteOpenHelper.TABLE_ITEM, allColumns, "_id = ?", new String[] { String.valueOf(id) }, null, null, null)) != null) {
 			if (cursor.moveToFirst()) {
 				item = this.cursorToItem(cursor);
 			}
@@ -84,6 +82,23 @@ public class ItemDataSource {
 		return items;
 	}
 
+	public List<Item> findByCategoryId(long categoryId) {
+		List<Item> items = new ArrayList<Item>();
+		
+		Cursor cursor = database.query(BesitzSQLiteOpenHelper.TABLE_ITEM, allColumns, "categoryId = ?", new String[] {categoryId + ""}, null, null, null);
+		
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Item item = cursorToItem(cursor);
+			items.add(item);
+			cursor.moveToNext();
+		}
+
+		// Make sure to close the cursor
+		cursor.close();
+		return items;
+	}
+	
 	private Item cursorToItem(Cursor cursor) {
 		Item item = new Item();
 		item.setId(cursor.getLong(0));

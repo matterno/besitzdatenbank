@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 public class ItemDetailActivity extends FragmentActivity {
 
-	private int category;
+	private long category;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,10 +19,10 @@ public class ItemDetailActivity extends FragmentActivity {
 
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
-            arguments.putInt(ItemListActivity.EXTRA_SELECTED_ITEM,
-                    getIntent().getIntExtra(ItemListActivity.EXTRA_SELECTED_ITEM,0));
-            category = getIntent().getIntExtra(ItemListActivity.EXTRA_SELECTED_CATEGORY,0);
-            arguments.putInt(ItemListActivity.EXTRA_SELECTED_CATEGORY,category);
+            arguments.putLong(ItemListActivity.EXTRA_SELECTED_ITEM,
+                    getIntent().getLongExtra(ItemListActivity.EXTRA_SELECTED_ITEM,0));
+            category = getIntent().getLongExtra(ItemListActivity.EXTRA_SELECTED_CATEGORY,0);
+            arguments.putLong(ItemListActivity.EXTRA_SELECTED_CATEGORY,category);
             ItemDetailFragment fragment = new ItemDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

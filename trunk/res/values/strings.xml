@@ -5,8 +5,10 @@
 
     <string name="menu_add">Add</string>
     <string name="menu_search">Search</string>
-    <string name="menu_delete">Delete</string>
-    <string name="menu_edit">Edit</string>
+    <string name="menu_delete">Delete Category</string>
+    <string name="menu_edit">Edit Category</string>
+    
+    <string name="delete_dialog_confirmation">Want to delete this category?</string>
         
     <string name="iv_image">Image</string>
     
@@ -15,4 +17,11 @@
     
     <string name="btn_save">Save</string>
     <string name="btn_cancel">Cancel</string>
+    
+    <string name="tv_detail_add_attribute">Add attribute &#8230;</string>
+    <string name="tv_attributes_header">Attributes</string>
+    
+    <string name="dialog_choose_location">Choose location</string>
+    <string name="dialog_location_camera">Camera</string>
+    <string name="dialog_location_gallery">Gallery</string>
 </resources>

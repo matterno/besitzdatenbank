@@ -5,11 +5,12 @@ import java.util.List;
 import de.hsbremen.androidkurs.besitzdatenbank.sqlite.entity.Item;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -45,7 +46,11 @@ public class ItemListFragment extends ListFragment {
 		if(getArguments().containsKey(ItemListActivity.EXTRA_SELECTED_CATEGORY)) {
 			categoryID = getArguments().getLong(ItemListActivity.EXTRA_SELECTED_CATEGORY);
 		}
-		Log.d("ItemListFragment", "categoryID = " + categoryID);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		
 		items = BesitzApplication.getItemDataSource().findByCategoryId(categoryID);
 
@@ -62,8 +67,10 @@ public class ItemListFragment extends ListFragment {
 		setListAdapter(new ArrayAdapter<Item>(getActivity(),
 				android.R.layout.simple_list_item_activated_1, android.R.id.text1,
 				items));
+		
+		return super.onCreateView(inflater, container, savedInstanceState);
 	}
-
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);

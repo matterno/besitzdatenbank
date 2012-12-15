@@ -1,5 +1,6 @@
 package de.hsbremen.androidkurs.besitzdatenbank;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -15,7 +16,9 @@ public class ItemDetailActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_detail);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.color.greenPrimary));
 
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_itemdetail_edit"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_edit"/>
+    
+    <item
+        android:id="@+id/menu_itemdetail_delete"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:orderInCategory="200"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_delete"/>
+
+</menu>

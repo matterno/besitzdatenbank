@@ -52,29 +52,36 @@ containing a value of this type.
         public static final int section_header=0x7f020001;
     }
     public static final class id {
-        public static final int item_detail_container=0x7f080000;
-        public static final int item_list=0x7f080003;
-        public static final int iv_item_detail_images=0x7f080006;
-        public static final int lv_attribute=0x7f080009;
-        public static final int menu_itemlist_add=0x7f08000a;
-        public static final int menu_itemlist_delete=0x7f08000c;
-        public static final int menu_itemlist_edit=0x7f08000b;
-        public static final int menu_itemlist_search=0x7f08000d;
-        public static final int pager=0x7f080001;
-        public static final int pager_title_strip=0x7f080002;
-        public static final int rl_picture_containers=0x7f080005;
-        public static final int tv_attributes_header=0x7f080007;
-        public static final int tv_item_detail_add=0x7f080008;
-        public static final int tv_item_detail_name=0x7f080004;
+        public static final int editText1=0x7f080000;
+        public static final int editText2=0x7f080002;
+        public static final int item_detail_container=0x7f080003;
+        public static final int item_list=0x7f080006;
+        public static final int iv_item_detail_images=0x7f080009;
+        public static final int lv_attribute=0x7f08000c;
+        public static final int menu_itemdetail_delete=0x7f080012;
+        public static final int menu_itemdetail_edit=0x7f080011;
+        public static final int menu_itemlist_add=0x7f08000d;
+        public static final int menu_itemlist_delete=0x7f08000f;
+        public static final int menu_itemlist_edit=0x7f08000e;
+        public static final int menu_itemlist_search=0x7f080010;
+        public static final int pager=0x7f080004;
+        public static final int pager_title_strip=0x7f080005;
+        public static final int rl_picture_containers=0x7f080008;
+        public static final int spinner1=0x7f080001;
+        public static final int tv_attributes_header=0x7f08000a;
+        public static final int tv_item_detail_add=0x7f08000b;
+        public static final int tv_item_detail_name=0x7f080007;
     }
     public static final class layout {
-        public static final int activity_item_detail=0x7f030000;
-        public static final int activity_item_list=0x7f030001;
-        public static final int activity_item_twopane=0x7f030002;
-        public static final int fragment_item_detail=0x7f030003;
+        public static final int activity_dialog=0x7f030000;
+        public static final int activity_item_detail=0x7f030001;
+        public static final int activity_item_list=0x7f030002;
+        public static final int activity_item_twopane=0x7f030003;
+        public static final int fragment_item_detail=0x7f030004;
     }
     public static final class menu {
         public static final int activity_item_list=0x7f070000;
+        public static final int fragment_item_detail=0x7f070001;
     }
     public static final class string {
         public static final int app_name=0x7f050000;

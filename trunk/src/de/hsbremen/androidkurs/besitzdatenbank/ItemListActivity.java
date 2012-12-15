@@ -245,6 +245,11 @@ public class ItemListActivity extends FragmentActivity implements
 		public CharSequence getPageTitle(int position) {
 			return categories.get(position).toString();
 		}
+		
+		@Override
+		public int getItemPosition(Object object) {
+			return POSITION_NONE;
+		}
 	}
 
 	@Override
@@ -414,7 +419,7 @@ public class ItemListActivity extends FragmentActivity implements
 					.replace(R.id.item_list, fragment).commit();
 
 		} else {
-			// Nothing
+			mSectionsPagerAdapter.notifyDataSetChanged();
 			return;
 		}
 

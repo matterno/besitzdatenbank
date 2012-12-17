@@ -29,7 +29,7 @@ public class BesitzSQLiteOpenHelper extends SQLiteOpenHelper {
 			+ " integer primary key autoincrement, " + COLUMN_NAME
 			+ " text not null, " + COLUMN_PICTURE + " text, "
 			+ COLUMN_CATEGORYID + " integer references " + TABLE_CATEGORY + "("
-			+ COLUMN_ID + "));";
+			+ COLUMN_ID + ") ON DELETE CASCADE);";
 	
 	public BesitzSQLiteOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);

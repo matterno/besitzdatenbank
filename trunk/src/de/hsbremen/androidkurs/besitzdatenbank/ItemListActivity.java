@@ -301,11 +301,12 @@ public class ItemListActivity extends FragmentActivity implements
 	@Override
 	public void onPageSelected(int position) {
 		mSelectedCategory = position;
-
+		getActionBar().setSelectedNavigationItem(position);
+		
 		Log.d("ItemListActivity", "mSelectedCategory = " + categories.get(mSelectedCategory).getId());
 	}
 
-	protected void onSearchItemClicked() {
+	private void onSearchItemClicked() {
 		if(mTwoPane) {
 			Bundle listArguments = new Bundle();
 

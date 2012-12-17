@@ -99,6 +99,13 @@ public class ItemDataSource {
 		return items;
 	}
 	
+	public Cursor findLikeName(String name) {
+		if(name != null && !"".equals(name)) {
+			return database.query(BesitzSQLiteOpenHelper.TABLE_ITEM, allColumns, "name LIKE '%"  + name + "%'", null, null, null, null);
+		}
+		return null;
+	}
+	
 	private Item cursorToItem(Cursor cursor) {
 		Item item = new Item();
 		item.setId(cursor.getLong(0));

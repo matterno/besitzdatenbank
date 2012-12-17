@@ -18,7 +18,6 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -62,7 +61,7 @@ public class ItemDetailFragment extends Fragment {
 
 	private Item mItem;
 
-	private long categoryId;
+	private long mCategoryId;
 
 	private long mItemId;
 
@@ -85,7 +84,7 @@ public class ItemDetailFragment extends Fragment {
 
 		if (getArguments()
 				.containsKey(ItemListActivity.EXTRA_SELECTED_CATEGORY)) {
-			categoryId = getArguments().getLong(
+			mCategoryId = getArguments().getLong(
 					ItemListActivity.EXTRA_SELECTED_CATEGORY);
 		}
 
@@ -154,13 +153,7 @@ public class ItemDetailFragment extends Fragment {
 				builder.setView(view);
 				builder.setPositiveButton("OK", null);
 				builder.setNegativeButton("Cancel", null);
-				//builder.setCustomTitle(customTitleView)
 				builder.show();
-				
-//				Dialog dialog = new Dialog(getActivity());
-//				dialog.setTitle("Add attribute");
-//				dialog.setContentView(R.layout.activity_dialog);
-//				dialog.show();
 				
 				// TODO
 				Toast.makeText(ItemDetailFragment.this.getActivity(),
@@ -212,7 +205,12 @@ public class ItemDetailFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_itemdetail_edit:
-
+			// TODO Auf DB zugreifen und Item-Name änder
+			break;
+		case R.id.menu_itemdetail_delete:
+			// TODO Auf DB zugreifen und Item löschen
+			// Danach neuen Intent zu ItemListActivity
+			// BesitzApplication.getItemDataSource().deleteItem(mItemId);
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -231,7 +229,6 @@ public class ItemDetailFragment extends Fragment {
 	private void showPictureDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(getString(R.string.dialog_choose_location));
-		// TODO Switch Case menu title
 
 		final CharSequence[] items = {
 				getString(R.string.dialog_location_camera),

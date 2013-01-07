@@ -56,15 +56,18 @@ containing a value of this type.
         public static final int editText2=0x7f080002;
         public static final int item_detail_container=0x7f080003;
         public static final int item_list=0x7f080006;
+        public static final int iv_edit=0x7f080010;
         public static final int iv_item_detail_images=0x7f080009;
+        public static final int iv_location_edit=0x7f08000d;
+        public static final int iv_location_maps=0x7f08000f;
         public static final int lv_attribute=0x7f08000c;
-        public static final int menu_itemdetail_delete=0x7f080012;
-        public static final int menu_itemdetail_edit=0x7f080011;
-        public static final int menu_itemlist_add=0x7f08000d;
-        public static final int menu_itemlist_cab_delete=0x7f080013;
-        public static final int menu_itemlist_delete=0x7f08000f;
-        public static final int menu_itemlist_edit=0x7f08000e;
-        public static final int menu_itemlist_search=0x7f080010;
+        public static final int menu_itemdetail_delete=0x7f080018;
+        public static final int menu_itemdetail_edit=0x7f080017;
+        public static final int menu_itemlist_add=0x7f080013;
+        public static final int menu_itemlist_cab_delete=0x7f080019;
+        public static final int menu_itemlist_delete=0x7f080015;
+        public static final int menu_itemlist_edit=0x7f080014;
+        public static final int menu_itemlist_search=0x7f080016;
         public static final int pager=0x7f080004;
         public static final int pager_title_strip=0x7f080005;
         public static final int rl_picture_containers=0x7f080008;
@@ -72,6 +75,9 @@ containing a value of this type.
         public static final int tv_attributes_header=0x7f08000a;
         public static final int tv_item_detail_add=0x7f08000b;
         public static final int tv_item_detail_name=0x7f080007;
+        public static final int tv_location_name=0x7f08000e;
+        public static final int tv_name=0x7f080011;
+        public static final int tv_value=0x7f080012;
     }
     public static final class layout {
         public static final int activity_dialog=0x7f030000;
@@ -79,6 +85,8 @@ containing a value of this type.
         public static final int activity_item_list=0x7f030002;
         public static final int activity_item_twopane=0x7f030003;
         public static final int fragment_item_detail=0x7f030004;
+        public static final int list_item_location=0x7f030005;
+        public static final int list_item_text=0x7f030006;
     }
     public static final class menu {
         public static final int activity_item_list=0x7f070000;
@@ -87,22 +95,25 @@ containing a value of this type.
     }
     public static final class string {
         public static final int app_name=0x7f050000;
-        public static final int btn_cancel=0x7f05000b;
-        public static final int btn_save=0x7f05000a;
-        public static final int category=0x7f050008;
-        public static final int delete_dialog_confirmation=0x7f050006;
-        public static final int dialog_choose_location=0x7f05000e;
-        public static final int dialog_location_camera=0x7f05000f;
-        public static final int dialog_location_gallery=0x7f050010;
-        public static final int item=0x7f050009;
-        public static final int iv_image=0x7f050007;
+        public static final int attribute_name_date=0x7f050009;
+        public static final int attribute_name_location=0x7f05000a;
+        public static final int btn_cancel=0x7f05000e;
+        public static final int btn_save=0x7f05000d;
+        public static final int category=0x7f05000b;
+        public static final int delete_dialog_confirmation=0x7f050007;
+        public static final int dialog_choose_location=0x7f050011;
+        public static final int dialog_location_camera=0x7f050012;
+        public static final int dialog_location_gallery=0x7f050013;
+        public static final int edit_item=0x7f050006;
+        public static final int item=0x7f05000c;
+        public static final int iv_image=0x7f050008;
         public static final int menu_add=0x7f050002;
         public static final int menu_delete=0x7f050004;
         public static final int menu_edit=0x7f050005;
         public static final int menu_search=0x7f050003;
         public static final int title_item_detail=0x7f050001;
-        public static final int tv_attributes_header=0x7f05000d;
-        public static final int tv_detail_add_attribute=0x7f05000c;
+        public static final int tv_attributes_header=0x7f050010;
+        public static final int tv_detail_add_attribute=0x7f05000f;
     }
     public static final class style {
         public static final int AppTheme=0x7f060000;

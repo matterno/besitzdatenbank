@@ -85,6 +85,13 @@ public class ItemListFragment extends ListFragment {
 	}
 
 	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		getListView().setPadding(16, 16, 16, 16);
+		
+		super.onViewCreated(view, savedInstanceState);
+	}
+	
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		
 		ListView listview = getListView();

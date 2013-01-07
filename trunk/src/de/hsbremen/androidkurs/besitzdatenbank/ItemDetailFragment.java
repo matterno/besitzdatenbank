@@ -3,11 +3,13 @@ package de.hsbremen.androidkurs.besitzdatenbank;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import de.hsbremen.androidkurs.besitzdatenbank.adapter.AttributeAdapter;
 import de.hsbremen.androidkurs.besitzdatenbank.sqlite.entity.Attribute;
 import de.hsbremen.androidkurs.besitzdatenbank.sqlite.entity.Item;
 import de.hsbremen.androidkurs.besitzdatenbank.util.AlbumStorageDirFactory;
@@ -37,6 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -61,8 +64,6 @@ public class ItemDetailFragment extends Fragment {
 
 	private Item mItem;
 
-	private long mCategoryId;
-
 	private long mItemId;
 
 	private List<Attribute> attributes;
@@ -73,7 +74,7 @@ public class ItemDetailFragment extends Fragment {
 
 	private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
-	private boolean mTwoPane;
+	private long mCategoryId;
 
 	public ItemDetailFragment() {
 	}
@@ -82,15 +83,14 @@ public class ItemDetailFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (getArguments()
-				.containsKey(ItemListActivity.EXTRA_SELECTED_CATEGORY)) {
-			mCategoryId = getArguments().getLong(
-					ItemListActivity.EXTRA_SELECTED_CATEGORY);
-		}
-
 		if (getArguments().containsKey(ItemListActivity.EXTRA_SELECTED_ITEM)) {
 			mItemId = getArguments().getLong(
 					ItemListActivity.EXTRA_SELECTED_ITEM);
+		}
+		
+		if (getArguments().containsKey(ItemListActivity.EXTRA_SELECTED_CATEGORY)) {
+			mCategoryId = getArguments().getLong(
+					ItemListActivity.EXTRA_SELECTED_CATEGORY);
 		}
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
@@ -116,14 +116,19 @@ public class ItemDetailFragment extends Fragment {
 
 		// TODO Add ListAdapter to Layout
 		// list = getFromDB
+		Date d = new Date();
+		
 		attributes = new ArrayList<Attribute>();
-		Attribute attr = new Attribute();
-		attr.setName("Test");
+		Attribute attr = new Attribute(Attribute.TYPE_TEXT,"Anzahl","2",mCategoryId);
+		Attribute attr2 = new Attribute(Attribute.TYPE_DATE,getString(R.string.attribute_name_date),d.getTime() + "",mCategoryId);
+		Attribute attr3 = new Attribute(Attribute.TYPE_LOCATION,getString(R.string.attribute_name_location),"3",mCategoryId);
 		attributes.add(attr);
-		ArrayAdapter<Attribute> adapter = new ArrayAdapter<Attribute>(
-				getActivity(), android.R.layout.simple_list_item_1, attributes);
+		attributes.add(attr2);
+		attributes.add(attr3);
+		AttributeAdapter adapter = new AttributeAdapter(getActivity(), attributes);
 		lv_attributes.setAdapter(adapter);
-
+		lv_attributes.setSelector(android.R.color.transparent);
+		
 		mItem = BesitzApplication.getItemDataSource().getItem(mItemId);
 
 		if (mItem != null) {
@@ -162,8 +167,6 @@ public class ItemDetailFragment extends Fragment {
 		});
 
 		if (getActivity() instanceof ItemDetailActivity) {
-			mTwoPane = false;
-
 			this.setHasOptionsMenu(true);
 
 			ActionBar actionBar = getActivity().getActionBar();
@@ -205,12 +208,10 @@ public class ItemDetailFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_itemdetail_edit:
-			// TODO Auf DB zugreifen und Item-Name änder
+			showEditInputDialog();
 			break;
 		case R.id.menu_itemdetail_delete:
-			// TODO Auf DB zugreifen und Item löschen
-			// Danach neuen Intent zu ItemListActivity
-			// BesitzApplication.getItemDataSource().deleteItem(mItemId);
+			showDeleteConfirmationDialog();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -394,5 +395,53 @@ public class ItemDetailFragment extends Fragment {
 		Uri contentUri = Uri.fromFile(f);
 		mediaScanIntent.setData(contentUri);
 		getActivity().sendBroadcast(mediaScanIntent);
+	}
+	
+	private void showDeleteConfirmationDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle(R.string.menu_delete);
+		
+		builder.setMessage(R.string.delete_dialog_confirmation);
+
+		builder.setPositiveButton(R.string.btn_save,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						BesitzApplication.getItemDataSource().deleteItem(mItemId);
+						Intent intent = new Intent(getActivity(),ItemListActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						startActivity(intent);
+					}
+				});
+
+		builder.setNegativeButton(R.string.btn_cancel, null);
+
+		builder.show();
+	}
+	
+	private void showEditInputDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle(getString(R.string.edit_item));
+		
+		final EditText input = new EditText(getActivity());
+		input.setText(this.mItem.getName());
+		builder.setView(input);
+
+		builder.setPositiveButton(R.string.btn_save,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						String value = input.getText().toString();
+
+						mItem.setName(value);
+						BesitzApplication.getItemDataSource().updateItem(mItem);
+						
+						getActivity().getActionBar().setTitle(value);
+					}
+				});
+
+		builder.setNegativeButton(R.string.btn_cancel, null);
+
+		builder.show();
 	}
 }

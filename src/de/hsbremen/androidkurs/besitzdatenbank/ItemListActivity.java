@@ -131,6 +131,8 @@ public class ItemListActivity extends FragmentActivity implements
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		Log.d("ItemListActivity", "onNavigationItemSelected");
 
+		mSelectedCategory = itemPosition;
+		
 		if (mTwoPane) {
 			Bundle arguments = new Bundle();
 

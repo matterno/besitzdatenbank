@@ -8,9 +8,14 @@
     <string name="menu_delete">Delete Category</string>
     <string name="menu_edit">Edit Category</string>
     
+    <string name="edit_item">Edit Item</string>
+    
     <string name="delete_dialog_confirmation">Want to delete this category?</string>
         
     <string name="iv_image">Image</string>
+    
+    <string name="attribute_name_date">Date</string>
+    <string name="attribute_name_location">Location</string>
     
     <string name="category">Category</string>
     <string name="item">Item</string>

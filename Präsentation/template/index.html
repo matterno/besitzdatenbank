@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Besitzdatenbank</title>
+
+    <meta charset='utf-8'>
+    <script
+      src='../slides.js'></script>
+  </head>
+  
+  <style>
+    /* Your individual styles here, or just use inline styles if that’s
+       what you want. */
+    
+    
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular template-default'>
+      
+      <!-- Your slides (<article>s) go here. Delete or comment out the
+           slides below. -->
+
+      <article>
+        <h1>
+			Besitzdatenbank
+		</h1>
+        <p>
+			Timo Klostermann, Seda Beltekin
+          <br>
+			21. Januar 2013
+        </p>
+      </article>
+      
+      <article>
+		<h3>
+			Inhalt
+		</h3>
+		<ul>
+			<li>
+				Besitzdatenbank
+			</li>
+			<li>
+				<p>
+					Benutzte Android4-Elemente
+				</p>
+				<ul>
+					<li>
+						ActionBar
+					</li>
+					<li>
+						Fragments
+					</li>
+					<li>
+						ViewPager
+					</li>
+					<li>
+						Contextual ActionBar
+					</li>
+				</ul>
+			</li>
+			<li>
+				Abwärtskompatibilität
+			</li>
+			<li>
+				Seitenempfehlungen
+			</li>
+		</ul>
+      </article>
+
+      <article>
+        <h3>
+			Was ist die Besitzdatenbank?
+        </h3>
+        <p>
+			App zur Besitzverwaltung
+		</p>
+		<ul>
+			<li>
+				Verschiedenen Kategorien
+			</li>
+			<li>
+				<p>
+					Generische Eigenschaften
+				</p>
+				<ul>
+					<li>
+						Text
+					</li>
+					<li>
+						Bewertung
+					</li>
+					<li>
+						Standort
+					</li>
+					<li>
+						Termin
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<p>
+			Schwerpunkt: Android 4-API
+		</p>
+		
+		<div id="phonediv1" class="phoneOuterClass" style="position: absolute; top: 40px; right: 60px;" >
+			<img id="phone1" class="phoneInnerClass" src="../images/black.png">
+		</div>
+		<p class="mobilephonecontrol">
+			<input type="button" class="pconn" id="pconn1" onclick="phoneConnect(0)" value="4.7 Zoll" />
+			<input type="button" class="pconn2" id="pconn21" onclick="phoneConnect(1)" value="7.0 Zoll" />
+			<input type="button" class="pdisconn" id="pdisconn2" disabled="disabled" onclick="phoneDisconnect()" value="trennen" />
+		</p>
+		<p class="mobilephonerotation">
+			<input type="button" id="protateleft1" onclick="phoneRotate(-1,'1')" value="<--" />
+			<button id="protatemiddle1" disabled="disabled" onclick="phoneRotate(0,'1')">^<br />|</button>
+			<input type="button" id="protateright1" onclick="phoneRotate(1,'1')" value="->>" />
+		</p>
+      </article>
+	  
+	  <article>
+		<h3>
+			ActionBar
+		</h3>
+		<h4>
+			Vorteile:
+		</h4>
+		<ul>
+			<li>
+				Navigation durch App
+			</li>
+			<li>
+				Darstellung von Menü-Einträgen
+			</li>
+			<li>
+				Wegfall einer Hardware-Taste
+			</li>
+		</ul>
+		
+		<h4>
+			Nachteile:
+		</h4>
+		<ul>
+			<li>
+				Platzverbrauch
+			</li>
+			<li>
+				Geräte mit Menü-Taste
+			</li>
+		</ul>
+		
+		<div id="phonediv2" class="phoneOuterClass" style="position: absolute; top: 40px; right: 60px;" >
+			<img id="phone2" class="phoneInnerClass" src="../images/black.png">
+		</div>
+		<p class="mobilephonecontrol">
+			<input type="button" class="pconn" id="pconn2" onclick="phoneConnect(0)" value="4.7 Zoll" />
+			<input type="button" class="pconn2" id="pconn22" onclick="phoneConnect(1)" value="7.0 Zoll" />
+			<input type="button" class="pdisconn" id="pdisconn2" disabled="disabled" onclick="phoneDisconnect()" value="trennen" />
+		</p>
+		<p class="mobilephonerotation">
+			<input type="button" id="protateleft2" onclick="phoneRotate(-1,'2')" value="<--" />
+			<button id="protatemiddle2" disabled="disabled" onclick="phoneRotate(0,'2')">^<br />|</button>
+			<input type="button" id="protateright2" onclick="phoneRotate(1,'2')" value="->>" />
+		</p>
+	  </article>
+
+	  <article>
+		<h3>
+			Fragments
+		</h3>
+		<h4>
+			Vorteile:
+		</h4>
+		<ul>
+			<li>
+				Ausnutzung großer Displays
+			</li>
+			<li>
+				Modularisierung
+			</li>
+			<li>
+				Lifecycles
+			</li>
+		</ul>
+		
+		<h4>
+			Nachteile:
+		</h4>
+		<ul>
+			<li>
+				Lifecycles
+			</li>
+		</ul>
+		
+		<div id="phonediv3" class="phoneOuterClass" style="position: absolute; top: 40px; right: 60px;" >
+			<img id="phone3" class="phoneInnerClass" src="../images/black.png">
+		</div>
+		<p class="mobilephonecontrol">
+			<input type="button" class="pconn" id="pconn3" onclick="phoneConnect(0)" value="4.7 Zoll" />
+			<input type="button" class="pconn2" id="pconn23" onclick="phoneConnect(1)" value="7.0 Zoll"" />
+			<input type="button" class="pdisconn" id="pdisconn3" disabled="disabled" onclick="phoneDisconnect()" value="trennen" />
+		</p>
+		<p class="mobilephonerotation">
+			<input type="button" id="protateleft3" onclick="phoneRotate(-1,'3')" value="<--" />
+			<button id="protatemiddle3" disabled="disabled" onclick="phoneRotate(0,'3')">^<br />|</button>
+			<input type="button" id="protateright3" onclick="phoneRotate(1,'3')" value="->>" />
+		</p>
+	  </article>
+	  
+	  <article>
+		<h3>
+			ViewPager
+		</h3>
+		<h4>
+			Vorteile:
+		</h4>
+		<ul>
+			<li>
+				Dynamischer Umgang mit<br>Fragments
+			</li>
+			<li>
+				Wisch-Gesten
+			</li>
+		</ul>
+		
+		<h4>
+			Nachteile:
+		</h4>
+		<ul>
+			<li>
+				Ersetzen/Löschen von Fragments
+			</li>
+		</ul>
+		
+		<div id="phonediv4" class="phoneOuterClass" style="position: absolute; top: 40px; right: 60px;" >
+			<img id="phone4" class="phoneInnerClass" src="../images/black.png">
+		</div>
+		<p class="mobilephonecontrol">
+			<input type="button" class="pconn" id="pconn4" onclick="phoneConnect(0)" value="4.7 Zoll" />
+			<input type="button" class="pconn2" id="pconn24" onclick="phoneConnect(1)" value="7.0 Zoll"" />
+			<input type="button" class="pdisconn" id="pdisconn4" disabled="disabled" onclick="phoneDisconnect()" value="trennen" />
+		</p>
+		<p class="mobilephonerotation">
+			<input type="button" id="protateleft4" onclick="phoneRotate(-1,'4')" value="<--" />
+			<button id="protatemiddle4" disabled="disabled" onclick="phoneRotate(0,'4')">^<br />|</button>
+			<input type="button" id="protateright4" onclick="phoneRotate(1,'4')" value="->>" />
+		</p>
+	  </article>
+	  
+	  <article>
+		<h3>
+			Contextual ActionBar
+		</h3>
+		<h4>
+			Vorteile:
+		</h4>
+		<ul>
+			<li>
+				Mehrfachselektierung
+			</li>
+			<li>
+				Neue ActionBar
+			</li>
+		</ul>
+		
+		<h4>
+			Nachteile:
+		</h4>
+		<ul>
+			<li>
+				Gedrückthalten zum Auswählen
+			</li>
+		</ul>
+		
+		<div id="phonediv5" class="phoneOuterClass" style="position: absolute; top: 40px; right: 60px;" >
+			<img id="phone5" class="phoneInnerClass" src="../images/black.png">
+		</div>
+		<p class="mobilephonecontrol">
+			<input type="button" class="pconn" id="pconn5" onclick="phoneConnect(0)" value="4.7 Zoll" />
+			<input type="button" class="pconn2" id="pconn25" onclick="phoneConnect(1)" value="7.0 Zoll"" />
+			<input type="button" class="pdisconn" id="pdisconn5" disabled="disabled" onclick="phoneDisconnect()" value="trennen" />
+		</p>
+		<p class="mobilephonerotation">
+			<input type="button" id="protateleft5" onclick="phoneRotate(-1,'5')" value="<--" />
+			<button id="protatemiddle5" disabled="disabled" onclick="phoneRotate(0,'5')">^<br />|</button>
+			<input type="button" id="protateright5" onclick="phoneRotate(1,'5')" value="->>" />
+		</p>
+	  </article>
+	  
+	  <article>
+		<h3>
+			Abwärtskompatibilität
+		</h3>
+		<h4>
+			Android Support Library
+		</h4>
+		<ul>
+			<li>
+				Fragments
+			</li>
+			<li>
+				ViewPager
+			</li>
+			<li>
+				...
+			</li>
+		</ul>
+		<h4>
+			ActionBarSherlock
+		</h4>
+		<ul>
+			<li>
+				Erweiterung der Support Library
+			</li>
+			<li>
+				ActionBar
+			</li>
+		<ul>
+	  </article>
+	  
+	  <article>
+		<h3>
+			Seitenempfehlungen
+		</h3>
+		<ul>
+			<li>
+				http://developer.android.com/design/
+			</li>
+			<li>
+				https://developers.google.com/live/
+			</li>
+			<li>
+				http://www.androiduipatterns.com/
+			</li>
+		</ul>
+	  </article>
+	  
+	  <article class='qrcode'>
+		<h3>
+			Danke für die Aufmerksamkeit
+		</h3>
+		<h3>
+			Fragen?
+		</h3>
+	  </article>
+    </section>
+
+  </body>
+</html>

@@ -29,4 +29,14 @@
     <string name="dialog_choose_location">Choose location</string>
     <string name="dialog_location_camera">Camera</string>
     <string name="dialog_location_gallery">Gallery</string>
+    
+    <string name="attribute_name">Name</string>
+    <string name="attribute_value">Value</string>
+    
+    <string-array name="attributes">
+        <item>Text</item>
+        <item>Location</item>
+        <item>Date</item>
+        <item>Rating</item>
+    </string-array>
 </resources>

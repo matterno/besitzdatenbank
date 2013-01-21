@@ -3,13 +3,13 @@ package de.hsbremen.androidkurs.besitzdatenbank;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import de.hsbremen.androidkurs.besitzdatenbank.adapter.AttributeAdapter;
+import de.hsbremen.androidkurs.besitzdatenbank.sqlite.AttributeDataSource;
 import de.hsbremen.androidkurs.besitzdatenbank.sqlite.entity.Attribute;
 import de.hsbremen.androidkurs.besitzdatenbank.sqlite.entity.Item;
 import de.hsbremen.androidkurs.besitzdatenbank.util.AlbumStorageDirFactory;
@@ -20,17 +20,24 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,11 +45,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +78,7 @@ public class ItemDetailFragment extends Fragment {
 
 	private long mItemId;
 
-	private List<Attribute> attributes;
+	private List<Attribute> mAttributes;
 
 	static final int PICK_CAMERA_REQUEST = 0;
 
@@ -75,6 +87,17 @@ public class ItemDetailFragment extends Fragment {
 	private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
 	private long mCategoryId;
+
+	private LocationManager mLocationManager;
+	
+	private Location mLocation;
+
+	private AttributeAdapter mAdapter;
+	
+    // Keys for maintaining UI states after rotation.
+    private static final int TEN_SECONDS = 10000;
+    private static final int TEN_METERS = 10;
+    private static final int TWO_MINUTES = 1000 * 60 * 2;
 
 	public ItemDetailFragment() {
 	}
@@ -87,8 +110,9 @@ public class ItemDetailFragment extends Fragment {
 			mItemId = getArguments().getLong(
 					ItemListActivity.EXTRA_SELECTED_ITEM);
 		}
-		
-		if (getArguments().containsKey(ItemListActivity.EXTRA_SELECTED_CATEGORY)) {
+
+		if (getArguments()
+				.containsKey(ItemListActivity.EXTRA_SELECTED_CATEGORY)) {
 			mCategoryId = getArguments().getLong(
 					ItemListActivity.EXTRA_SELECTED_CATEGORY);
 		}
@@ -98,6 +122,9 @@ public class ItemDetailFragment extends Fragment {
 		} else {
 			mAlbumStorageDirFactory = new BaseAlbumDirFactory();
 		}
+
+		mLocationManager = (LocationManager) getActivity().getSystemService(
+				Context.LOCATION_SERVICE);
 	}
 
 	@Override
@@ -114,19 +141,11 @@ public class ItemDetailFragment extends Fragment {
 		rl_picture_container = (RelativeLayout) rootView
 				.findViewById(R.id.rl_picture_containers);
 
-		// TODO Add ListAdapter to Layout
-		// list = getFromDB
-		Date d = new Date();
-		
-		attributes = new ArrayList<Attribute>();
-		Attribute attr = new Attribute(Attribute.TYPE_TEXT,"Anzahl","2",mCategoryId);
-		Attribute attr2 = new Attribute(Attribute.TYPE_DATE,getString(R.string.attribute_name_date),d.getTime() + "",mCategoryId);
-		Attribute attr3 = new Attribute(Attribute.TYPE_LOCATION,getString(R.string.attribute_name_location),"3",mCategoryId);
-		attributes.add(attr);
-		attributes.add(attr2);
-		attributes.add(attr3);
-		AttributeAdapter adapter = new AttributeAdapter(getActivity(), attributes);
-		lv_attributes.setAdapter(adapter);
+		// Get attributes from DB
+		mAttributes = BesitzApplication.getAttributeDataSource().findByItemId(mItemId);
+		mAdapter = new AttributeAdapter(getActivity(),
+				mAttributes);
+		lv_attributes.setAdapter(mAdapter);
 		lv_attributes.setSelector(android.R.color.transparent);
 		
 		mItem = BesitzApplication.getItemDataSource().getItem(mItemId);
@@ -151,18 +170,7 @@ public class ItemDetailFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				//TODO
-				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-				builder.setTitle("Add attribute");
-				View view = getActivity().getLayoutInflater().inflate(R.layout.activity_dialog, null);
-				builder.setView(view);
-				builder.setPositiveButton("OK", null);
-				builder.setNegativeButton("Cancel", null);
-				builder.show();
-				
-				// TODO
-				Toast.makeText(ItemDetailFragment.this.getActivity(),
-						"Eigenschaft hinzufügen", Toast.LENGTH_SHORT).show();
+				showNewAttributeDialog();
 			}
 		});
 
@@ -215,6 +223,12 @@ public class ItemDetailFragment extends Fragment {
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		setup();
 	}
 
 	private String getRealPathFromURI(Uri contentUri) {
@@ -396,19 +410,21 @@ public class ItemDetailFragment extends Fragment {
 		mediaScanIntent.setData(contentUri);
 		getActivity().sendBroadcast(mediaScanIntent);
 	}
-	
+
 	private void showDeleteConfirmationDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.menu_delete);
-		
+
 		builder.setMessage(R.string.delete_dialog_confirmation);
 
 		builder.setPositiveButton(R.string.btn_save,
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						BesitzApplication.getItemDataSource().deleteItem(mItemId);
-						Intent intent = new Intent(getActivity(),ItemListActivity.class);
+						BesitzApplication.getItemDataSource().deleteItem(
+								mItemId);
+						Intent intent = new Intent(getActivity(),
+								ItemListActivity.class);
 						intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						startActivity(intent);
 					}
@@ -418,11 +434,11 @@ public class ItemDetailFragment extends Fragment {
 
 		builder.show();
 	}
-	
+
 	private void showEditInputDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(getString(R.string.edit_item));
-		
+
 		final EditText input = new EditText(getActivity());
 		input.setText(this.mItem.getName());
 		builder.setView(input);
@@ -435,7 +451,7 @@ public class ItemDetailFragment extends Fragment {
 
 						mItem.setName(value);
 						BesitzApplication.getItemDataSource().updateItem(mItem);
-						
+
 						getActivity().getActionBar().setTitle(value);
 					}
 				});
@@ -444,4 +460,275 @@ public class ItemDetailFragment extends Fragment {
 
 		builder.show();
 	}
+
+	protected void showNewAttributeDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle("Add attribute");
+		View view = getActivity().getLayoutInflater().inflate(
+				R.layout.activity_dialog, null);
+		builder.setView(view);
+
+		final Spinner sp_attributes = (Spinner) view.findViewById(R.id.sp_type);
+		final EditText edt_name = (EditText) view.findViewById(R.id.edt_name);
+		final EditText edt_value = (EditText) view.findViewById(R.id.edt_value);
+		final Button btn_date = (Button) view.findViewById(R.id.btn_date);
+		final RatingBar rb_rating = (RatingBar) view
+				.findViewById(R.id.rb_rating);
+
+		sp_attributes.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				switch (arg2) {
+				case 0:
+					//Text
+					edt_name.setVisibility(View.VISIBLE);
+					edt_value.setVisibility(View.VISIBLE);
+					btn_date.setVisibility(View.GONE);
+					rb_rating.setVisibility(View.GONE);
+					break;
+				case 1:
+					//Location
+					edt_name.setVisibility(View.VISIBLE);
+					edt_value.setVisibility(View.GONE);
+					btn_date.setVisibility(View.GONE);
+					rb_rating.setVisibility(View.GONE);
+					break;
+				case 2:
+					//Date
+					edt_name.setVisibility(View.VISIBLE);
+					edt_value.setVisibility(View.GONE);
+					btn_date.setVisibility(View.VISIBLE);
+					rb_rating.setVisibility(View.GONE);
+
+					final Calendar c = Calendar.getInstance();
+					final int year = c.get(Calendar.YEAR);
+					final int month = c.get(Calendar.MONTH);
+					final int day = c.get(Calendar.DAY_OF_MONTH);
+					
+					final java.text.DateFormat sdf = DateFormat.getDateFormat(getActivity());
+					
+					btn_date.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							new DatePickerDialog(getActivity(),
+									new OnDateSetListener() {
+										@Override
+										public void onDateSet(DatePicker view,
+												int year, int monthOfYear,
+												int dayOfMonth) {
+											
+											Date d = new Date(year-1900, monthOfYear, dayOfMonth);
+											
+											btn_date.setText(sdf.format(d.getTime()));
+										}
+									}, year, month, day).show();
+						}
+					});
+					btn_date.setText(sdf.format(c.getTime()));
+					break;
+				case 3:
+					//Rating
+					edt_name.setVisibility(View.VISIBLE);
+					edt_value.setVisibility(View.GONE);
+					btn_date.setVisibility(View.GONE);
+					rb_rating.setVisibility(View.VISIBLE);
+					break;
+				}
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				sp_attributes.setSelection(0);
+			}
+		});
+
+		// Set buttons
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				AttributeDataSource attrDS = BesitzApplication
+						.getAttributeDataSource();
+				Attribute attribute = null;
+				
+				switch (sp_attributes.getSelectedItemPosition()) {
+				case 0:
+					//Text
+					attribute = new Attribute(Attribute.TYPE_TEXT, edt_name
+							.getText().toString(), edt_value.getText()
+							.toString(), mItemId);
+					attrDS.insertAttribute(attribute);
+					break;
+				case 1:
+					//Location
+					
+					if(mLocation != null) {
+						String location = "geo:" + mLocation.getLatitude() + "," + mLocation.getLongitude();
+						attribute = new Attribute(Attribute.TYPE_LOCATION, edt_name
+								.getText().toString(),location, mItemId);
+						attrDS.insertAttribute(attribute);
+					} else {
+						Toast.makeText(getActivity(), "No location found", Toast.LENGTH_SHORT).show();
+					}
+					break;
+				case 2:
+					//Date
+					
+					attribute = new Attribute(Attribute.TYPE_DATE, edt_name
+							.getText().toString(), btn_date.getText()
+							.toString(), mItemId);
+					attrDS.insertAttribute(attribute);
+					break;
+				case 3:
+					//Rating
+					
+					attribute = new Attribute(Attribute.TYPE_RATING, edt_name
+							.getText().toString(), String.valueOf(rb_rating.getProgress()), mItemId);
+					attrDS.insertAttribute(attribute);
+					break;
+				}
+				
+				if(attribute != null) {
+					mAttributes.add(attribute);
+					mAdapter.notifyDataSetChanged();
+				}
+			}
+		});
+		builder.setNegativeButton("Cancel", null);
+		builder.show();
+	}
+
+	// Set up fine and/or coarse location providers depending on whether the
+	// fine provider or
+	// both providers button is pressed.
+	private void setup() {
+		Location gpsLocation = null;
+		Location networkLocation = null;
+		mLocationManager.removeUpdates(listener);
+		// Request updates from both fine (gps) and coarse (network) providers.
+		gpsLocation = requestUpdatesFromProvider(LocationManager.GPS_PROVIDER);
+		networkLocation = requestUpdatesFromProvider(LocationManager.NETWORK_PROVIDER);
+
+		// If both providers return last known locations, compare the two and
+		// use the better
+		// one to update the UI. If only one provider returns a location, use
+		// it.
+		if (gpsLocation != null && networkLocation != null) {
+			updateLocation(getBetterLocation(gpsLocation, networkLocation));
+		} else if (gpsLocation != null) {
+			updateLocation(gpsLocation);
+		} else if (networkLocation != null) {
+			updateLocation(networkLocation);
+		}
+	}
+	
+	/**
+     * Method to register location updates with a desired location provider.  If the requested
+     * provider is not available on the device, the app displays a Toast with a message referenced
+     * by a resource id.
+     *
+     * @param provider Name of the requested provider.
+     * @param errorResId Resource id for the string message to be displayed if the provider does
+     *                   not exist on the device.
+     * @return A previously returned {@link android.location.Location} from the requested provider,
+     *         if exists.
+     */
+    private Location requestUpdatesFromProvider(final String provider) {
+        Location location = null;
+        if (mLocationManager.isProviderEnabled(provider)) {
+            mLocationManager.requestLocationUpdates(provider, TEN_SECONDS, TEN_METERS, listener);
+            location = mLocationManager.getLastKnownLocation(provider);
+        }
+        
+        return location;
+    }
+    
+    private final LocationListener listener = new LocationListener() {
+
+        @Override
+        public void onLocationChanged(Location location) {
+            // A new location update is received.  Do something useful with it.  Update the UI with
+            // the location update.
+            updateLocation(location);
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    };
+
+	protected void updateLocation(Location location) {
+		mLocation = location;
+	}
+	
+    /** Determines whether one Location reading is better than the current Location fix.
+     * Code taken from
+     * http://developer.android.com/guide/topics/location/obtaining-user-location.html
+     *
+     * @param newLocation  The new Location that you want to evaluate
+     * @param currentBestLocation  The current Location fix, to which you want to compare the new
+     *        one
+     * @return The better Location object based on recency and accuracy.
+     */
+   protected Location getBetterLocation(Location newLocation, Location currentBestLocation) {
+       if (currentBestLocation == null) {
+           // A new location is always better than no location
+           return newLocation;
+       }
+
+       // Check whether the new location fix is newer or older
+       long timeDelta = newLocation.getTime() - currentBestLocation.getTime();
+       boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
+       boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+       boolean isNewer = timeDelta > 0;
+
+       // If it's been more than two minutes since the current location, use the new location
+       // because the user has likely moved.
+       if (isSignificantlyNewer) {
+           return newLocation;
+       // If the new location is more than two minutes older, it must be worse
+       } else if (isSignificantlyOlder) {
+           return currentBestLocation;
+       }
+
+       // Check whether the new location fix is more or less accurate
+       int accuracyDelta = (int) (newLocation.getAccuracy() - currentBestLocation.getAccuracy());
+       boolean isLessAccurate = accuracyDelta > 0;
+       boolean isMoreAccurate = accuracyDelta < 0;
+       boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+       // Check if the old and new location are from the same provider
+       boolean isFromSameProvider = isSameProvider(newLocation.getProvider(),
+               currentBestLocation.getProvider());
+
+       // Determine location quality using a combination of timeliness and accuracy
+       if (isMoreAccurate) {
+           return newLocation;
+       } else if (isNewer && !isLessAccurate) {
+           return newLocation;
+       } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
+           return newLocation;
+       }
+       return currentBestLocation;
+   }
+   
+   /** Checks whether two providers are the same */
+   private boolean isSameProvider(String provider1, String provider2) {
+       if (provider1 == null) {
+         return provider2 == null;
+       }
+       return provider1.equals(provider2);
+   }
 }

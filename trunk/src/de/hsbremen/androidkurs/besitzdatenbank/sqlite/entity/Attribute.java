@@ -11,6 +11,7 @@ public class Attribute {
 	public static final int TYPE_TEXT = 0;
 	public static final int TYPE_LOCATION = 1;
 	public static final int TYPE_DATE = 2;
+	public static final int TYPE_RATING = 3;
 	
 	public Attribute(int type, String name, String value, long itemId) {
 		this.type = type;

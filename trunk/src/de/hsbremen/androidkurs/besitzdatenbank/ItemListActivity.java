@@ -145,8 +145,7 @@ public class ItemListActivity extends FragmentActivity implements
 					.replace(R.id.item_list, fragment).commit();
 
 			mSelectedItem = 0;
-			this.onItemSelected(itemPosition, BesitzApplication
-					.getItemDataSource().getAllItems().get(mSelectedItem).getId());
+			this.onItemSelected(itemPosition, BesitzApplication.getItemDataSource().findByCategoryId(categories.get(mSelectedCategory).getId()).get(mSelectedItem).getId());
 		} else {
 			mViewPager.setCurrentItem(mSelectedCategory);
 		}
@@ -384,7 +383,9 @@ public class ItemListActivity extends FragmentActivity implements
 									.insertCategory(cat);
 
 							refreshActionBarNavigationAdapter();
-							mSectionsPagerAdapter.notifyDataSetChanged();
+							if(!mTwoPane) {
+								mSectionsPagerAdapter.notifyDataSetChanged();
+							}
 							break;
 						case R.string.item:
 							Item item = new Item();
@@ -428,7 +429,9 @@ public class ItemListActivity extends FragmentActivity implements
 						BesitzApplication.getCategoryDataSource().updateCategory(cat);
 						
 						refreshActionBarNavigationAdapter();
-						mSectionsPagerAdapter.notifyDataSetChanged();
+						if(!mTwoPane) {
+							mSectionsPagerAdapter.notifyDataSetChanged();
+						}
 					}
 				});
 
@@ -450,6 +453,9 @@ public class ItemListActivity extends FragmentActivity implements
 					public void onClick(DialogInterface dialog, int which) {
 						BesitzApplication.getCategoryDataSource().deleteCategory(categories.get(mSelectedCategory).getId());
 						categories = BesitzApplication.getCategoryDataSource().getAllCategories();
+						if(!mTwoPane) {
+							mSectionsPagerAdapter.notifyDataSetChanged();
+						}
 						
 						addDefaultCategoryOnEmpty();
 						refreshActionBarNavigationAdapter();

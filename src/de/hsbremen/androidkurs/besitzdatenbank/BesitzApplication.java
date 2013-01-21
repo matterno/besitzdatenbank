@@ -1,5 +1,6 @@
 package de.hsbremen.androidkurs.besitzdatenbank;
 
+import de.hsbremen.androidkurs.besitzdatenbank.sqlite.AttributeDataSource;
 import de.hsbremen.androidkurs.besitzdatenbank.sqlite.CategoryDataSource;
 import de.hsbremen.androidkurs.besitzdatenbank.sqlite.ItemDataSource;
 import de.hsbremen.androidkurs.besitzdatenbank.sqlite.helper.BesitzSQLiteOpenHelper;
@@ -12,6 +13,7 @@ public class BesitzApplication extends Application {
 	private static BesitzSQLiteOpenHelper sqliteOpenHelper;
 	private static CategoryDataSource categroyDataSource;
 	private static ItemDataSource itemDataSource;
+	private static AttributeDataSource attributeDataSource;
 
 	public static CategoryDataSource getCategoryDataSource() {
 		return categroyDataSource;
@@ -19,6 +21,10 @@ public class BesitzApplication extends Application {
 
 	public static ItemDataSource getItemDataSource() {
 		return itemDataSource;
+	}
+	
+	public static AttributeDataSource getAttributeDataSource() {
+		return attributeDataSource;
 	}
 
 	@Override
@@ -32,6 +38,7 @@ public class BesitzApplication extends Application {
 		
 		categroyDataSource = new CategoryDataSource(sqliteDatabase);
 		itemDataSource = new ItemDataSource(sqliteDatabase);
+		attributeDataSource = new AttributeDataSource(sqliteDatabase);
 	}
 	
 	@Override

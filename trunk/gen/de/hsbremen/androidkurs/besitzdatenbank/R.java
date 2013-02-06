@@ -68,6 +68,7 @@ containing a value of this type.
         public static final int menu_itemdetail_edit=0x7f09001b;
         public static final int menu_itemlist_add=0x7f090017;
         public static final int menu_itemlist_cab_delete=0x7f09001d;
+        public static final int menu_itemlist_cab_edit=0x7f09001e;
         public static final int menu_itemlist_delete=0x7f090019;
         public static final int menu_itemlist_edit=0x7f090018;
         public static final int menu_itemlist_search=0x7f09001a;
@@ -100,7 +101,8 @@ containing a value of this type.
     public static final class menu {
         public static final int activity_item_list=0x7f080000;
         public static final int fragment_item_detail=0x7f080001;
-        public static final int fragment_item_list_cab=0x7f080002;
+        public static final int fragment_item_detail_cab=0x7f080002;
+        public static final int fragment_item_list_cab=0x7f080003;
     }
     public static final class string {
         public static final int app_name=0x7f050000;

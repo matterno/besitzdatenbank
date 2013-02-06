@@ -145,7 +145,7 @@ public class ItemListActivity extends FragmentActivity implements
 					.replace(R.id.item_list, fragment).commit();
 
 			mSelectedItem = 0;
-			this.onItemSelected(itemPosition, BesitzApplication.getItemDataSource().findByCategoryId(categories.get(mSelectedCategory).getId()).get(mSelectedItem).getId());
+			//this.onItemSelected(itemPosition, BesitzApplication.getItemDataSource().findByCategoryId(categories.get(mSelectedCategory).getId()).get(mSelectedItem).getId());
 		} else {
 			mViewPager.setCurrentItem(mSelectedCategory);
 		}
@@ -381,7 +381,7 @@ public class ItemListActivity extends FragmentActivity implements
 							cat.setName(value);
 							BesitzApplication.getCategoryDataSource()
 									.insertCategory(cat);
-
+							
 							refreshActionBarNavigationAdapter();
 							if(!mTwoPane) {
 								mSectionsPagerAdapter.notifyDataSetChanged();
